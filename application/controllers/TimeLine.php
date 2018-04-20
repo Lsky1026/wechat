@@ -20,6 +20,7 @@ class TimeLine extends CI_Controller {
                 $basePath = dirname(dirname(dirname(__FILE__))) . '/resourse/images';
                 $handler = opendir($basePath);
     
+                $files = [];
                 while(($fileName = readdir($handler)) !== false){
                     if($fileName != '.' && $fileName != '..'){
                         $files[] = $fileName;
@@ -35,7 +36,7 @@ class TimeLine extends CI_Controller {
                 $this->requestFlag = true;
                 $this->json([
                     'code' => true,
-                    'list' => empty($files) ? [] : $files
+                    'list' => $files
                 ]);
             }else{
                 $this->json([
