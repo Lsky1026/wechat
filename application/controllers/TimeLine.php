@@ -35,7 +35,7 @@ class TimeLine extends CI_Controller {
                 $this->requestFlag = true;
                 $this->json([
                     'code' => true,
-                    'list' => $files
+                    'list' => empty($files) ? [] : $files
                 ]);
             }else{
                 $this->json([
