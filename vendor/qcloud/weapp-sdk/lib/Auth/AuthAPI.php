@@ -43,10 +43,28 @@ class AuthAPI {
         // 4. 储存到数据库中
         User::storeUserInfo($userinfo, $skey, $sessionKey);
 
-        return [
-            'loginState' => Constants::S_AUTH,
-            'userinfo' => compact('userinfo', 'skey')
-        ];
+        // 本人登录
+        if($userinfo->openId === '111'){
+            return [
+                'loginState' => Constants::S_AUTH,
+                'userinfo' => compact('userinfo', 'skey')
+            ];
+        }else if($userinfo->openId == 'opIzq4p4OSlQIQ_Ia9EExwCuQJXs'){
+            // 宝贝登录
+            return [
+                'loginState' => Constants::S_AUTH,
+                'userinfo' => compact('userinfo', 'skey')
+            ];
+        }else{
+            return [
+                'loginState' => Constants::E_AUTH,
+                'error' => '您暂无权限登录该小程序'
+            ];
+        }
+        // return [
+        //     'loginState' => Constants::S_AUTH,
+        //     'userinfo' => compact('userinfo', 'skey')
+        // ];
     }
 
     public static function checkLogin($skey) {
