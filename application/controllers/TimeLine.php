@@ -30,14 +30,14 @@ class TimeLine extends CI_Controller {
                 if(!empty($files)){
                     rsort($files);
                     // 删除不必要数据
-                    foreach($files as $dirName){
-                        $handleDir = opendir($basePath . '/' . $dirName);
-                        while(($fileName = readdir($handleDir)) !== false){
-                            if($fileName != '.' && $fileName != '..' && (strpos($fileName, '.DS_') !== false)){
-                                unlink($basePath . '/' . $dirName . '/' . $fileName);
-                            }
-                        }
-                    }
+                    // foreach($files as $dirName){
+                    //     $handleDir = opendir($basePath . '/' . $dirName);
+                    //     while(($fileName = readdir($handleDir)) !== false){
+                    //         if($fileName != '.' && $fileName != '..' && (strpos($fileName, '.DS_') !== false)){
+                    //             unlink($basePath . '/' . $dirName . '/' . $fileName);
+                    //         }
+                    //     }
+                    // }
                 }
     
                 closedir($handler);
