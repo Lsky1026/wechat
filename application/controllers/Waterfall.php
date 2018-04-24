@@ -21,7 +21,7 @@ class Waterfall extends CI_Controller {
 
                 while(($fileName = readdir($handler)) !== false){
                     if($fileName != '.' && $fileName != '..'){
-                        if(strpos($fileName, 'DS_S') !== 0){
+                        if(strpos($fileName, 'DS_S') !== false){
                             unlink($tarPath . '/' . $fileName);
                         }else{
                             $allFiles[] = $fileName;
