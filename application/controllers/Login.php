@@ -9,10 +9,19 @@ class Login extends CI_Controller {
         $result = LoginService::login();
         
         if ($result['loginState'] === Constants::S_AUTH) {
-            $this->json([
-                'code' => 0,
-                'data' => $result['userinfo']
-            ]);
+            // 本人登录
+            if($result['userinfo']['openId'] == '111'){
+                $this->json([
+                    'code' => 0,
+                    'data' => $result['userinfo']
+                ]);
+            }else{
+                $this->json([
+                    'code' => -1,
+                    'error' => '您暂无权限登录该小程序'
+                ]);
+            }
+            
         } else {
             $this->json([
                 'code' => -1,
