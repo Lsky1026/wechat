@@ -10,21 +10,21 @@ class Login extends CI_Controller {
         
         if ($result['loginState'] === Constants::S_AUTH) {
             // 本人登录
-            // if($result['userinfo']->openId == '111'){
-            //     $this->json([
-            //         'code' => 0,
-            //         'data' => $result['userinfo']
-            //     ]);
-            // }else{
-            //     $this->json([
-            //         'code' => -1,
-            //         'error' => '您暂无权限登录该小程序'
-            //     ]);
-            // }
+            if($result['userinfo']['nickName'] == '111'){
                 $this->json([
                     'code' => 0,
                     'data' => $result['userinfo']
                 ]);
+            }else{
+                $this->json([
+                    'code' => -1,
+                    'error' => '您暂无权限登录该小程序'
+                ]);
+            }
+            // $this->json([
+            //     'code' => 0,
+            //     'data' => $result['userinfo']
+            // ]);
             
         } else {
             $this->json([
