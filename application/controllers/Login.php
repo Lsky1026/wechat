@@ -23,8 +23,7 @@ class Login extends CI_Controller {
             // }
             $this->json([
                 'code' => 0,
-                'data' => $result['userinfo'],
-                'openId' => $result['userinfo']['openid']
+                'data' => $result['userinfo']
             ]);
             
         } else {
