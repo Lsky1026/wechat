@@ -12,7 +12,7 @@ class Waterfall extends CI_Controller {
                 $this->requestFlag = false;
 
                 $basePath = dirname(dirname(dirname(__FILE__))) . '/resourse/images';
-                $tarPath = $basePath . '/' . $_GET['dirName'];
+                $tarPath = $basePath . '/' . $_GET['dirName'] . '/JPEG';
                 
                 $handler = opendir($tarPath);
     
