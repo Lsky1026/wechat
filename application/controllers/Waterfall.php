@@ -29,6 +29,8 @@ class Waterfall extends CI_Controller {
                     }
                 }
 
+                $allImagesCount = count($allFiles);
+
                 // 分割
                 $segImage = array_chunk($allFiles, 20);
                 $pages = $_GET['pages'];
@@ -55,7 +57,8 @@ class Waterfall extends CI_Controller {
                 $this->requestFlag = true;
                 $this->json([
                     'code' => true,
-                    'list' => $files
+                    'list' => $files,
+                    'count' => $allImagesCount
                 ]);
             }else{
                 $this->json([
