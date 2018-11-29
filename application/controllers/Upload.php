@@ -8,7 +8,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Upload extends CI_Controller {
     public function index() {
         // 处理文件上传
-        $file = $_FILES['file']; // 去除 field 值为 file 的文件
+        $file = $_FILES['uploadImg']; // 去除 field 值为 file 的文件
 
         ini_set('upload_max_filesize', '10M');
         ini_set('post_max_size', '10M');
