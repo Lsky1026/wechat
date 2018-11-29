@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-use \QCloud_WeApp_SDK\Conf as Conf;
-use \QCloud_WeApp_SDK\Cos\CosAPI as Cos;
-use \QCloud_WeApp_SDK\Constants as Constants;
+// use \QCloud_WeApp_SDK\Conf as Conf;
+// use \QCloud_WeApp_SDK\Cos\CosAPI as Cos;
+// use \QCloud_WeApp_SDK\Constants as Constants;
 
 class Upload extends CI_Controller {
     public function index() {
@@ -31,54 +31,71 @@ class Upload extends CI_Controller {
             return;
         }
 
-        $cosClient = Cos::getInstance();
-        $cosConfig = Conf::getCos();
-        $bucketName = $cosConfig['fileBucket'];
-        $folderName = $cosConfig['uploadFolder'];
+        $baseDir = date('Y-m-d');   // 未来将支持选择文件夹
+        $basePath = dirname(dirname(dirname(__FILE__))) . '/resourse/images';
+        $tarPath = $basePath . '/' . $baseDir . '/';
 
-        try {
-            /**
-             * 列出 bucket 列表
-             * 检查要上传的 bucket 有没有创建
-             * 若没有则创建
-             */
-            $bucketsDetail = $cosClient->listBuckets()->toArray()['Buckets'];
-            $bucketNames = [];
-            foreach ($bucketsDetail as $bucket) {
-                array_push($bucketNames, explode('-', $bucket['Name'])[0]);
-            }
-
-            // 若不存在 bucket 就创建 bucket
-            if (count($bucketNames) === 0 || !in_array($bucketName, $bucketNames)) {
-                $cosClient->createBucket([
-                    'Bucket' => $bucketName,
-                    'ACL' => 'public-read'
-                ])->toArray();
-            }
-
-            // 上传文件
-            $fileFolder = $folderName ? $folderName . '/' : '';
-            $fileKey = $fileFolder . md5(mt_rand()) . '-' . $file['name'];
-            $uploadStatus = $cosClient->upload(
-                $bucketName,
-                $fileKey,
-                file_get_contents($file['tmp_name'])
-            )->toArray();
-
-            $this->json([
-                'code' => 0,
-                'data' => [
-                    'imgUrl' => $uploadStatus['ObjectURL'],
-                    'size' => $file['size'],
-                    'mimeType' => $file['type'],
-                    'name' => $fileKey
-                ]
-            ]);
-        } catch (Exception $e) {
-            $this->json([
-                'code' => 1,
-                'error' => $e->__toString()
+        if(file_exists($tarPath . $file['name'])){
+            return $this->json([
+                'code' => false,
+                'msg' => '文件已经存在'
             ]);
         }
+
+        move_uploaded_file($file['tmp_name'], $tarPath . $file['name']);
+        return $this->json([
+            'code' => true,
+            'msg' => '上传成功'
+        ]);
+
+        // $cosClient = Cos::getInstance();
+        // $cosConfig = Conf::getCos();
+        // $bucketName = $cosConfig['fileBucket'];
+        // $folderName = $cosConfig['uploadFolder'];
+
+        // try {
+        //     /**
+        //      * 列出 bucket 列表
+        //      * 检查要上传的 bucket 有没有创建
+        //      * 若没有则创建
+        //      */
+        //     $bucketsDetail = $cosClient->listBuckets()->toArray()['Buckets'];
+        //     $bucketNames = [];
+        //     foreach ($bucketsDetail as $bucket) {
+        //         array_push($bucketNames, explode('-', $bucket['Name'])[0]);
+        //     }
+
+        //     // 若不存在 bucket 就创建 bucket
+        //     if (count($bucketNames) === 0 || !in_array($bucketName, $bucketNames)) {
+        //         $cosClient->createBucket([
+        //             'Bucket' => $bucketName,
+        //             'ACL' => 'public-read'
+        //         ])->toArray();
+        //     }
+
+        //     // 上传文件
+        //     $fileFolder = $folderName ? $folderName . '/' : '';
+        //     $fileKey = $fileFolder . md5(mt_rand()) . '-' . $file['name'];
+        //     $uploadStatus = $cosClient->upload(
+        //         $bucketName,
+        //         $fileKey,
+        //         file_get_contents($file['tmp_name'])
+        //     )->toArray();
+
+        //     $this->json([
+        //         'code' => 0,
+        //         'data' => [
+        //             'imgUrl' => $uploadStatus['ObjectURL'],
+        //             'size' => $file['size'],
+        //             'mimeType' => $file['type'],
+        //             'name' => $fileKey
+        //         ]
+        //     ]);
+        // } catch (Exception $e) {
+        //     $this->json([
+        //         'code' => 1,
+        //         'error' => $e->__toString()
+        //     ]);
+        // }
     }
 }
