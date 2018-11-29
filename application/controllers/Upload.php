@@ -41,7 +41,7 @@ class Upload extends CI_Controller {
             ]);            
         }
 
-        $fileName = $baseDir . '_' . time() . '.' .$file['type'];
+        $fileName = $baseDir . '_' . time() . '.' . explode('/', $file['type'])[1];
         $oldImgName = $tarPath . $file['name'];
         if(file_exists($tarPath . $fileName)){
             return $this->json([
