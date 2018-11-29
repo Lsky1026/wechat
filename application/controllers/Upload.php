@@ -34,6 +34,12 @@ class Upload extends CI_Controller {
         $baseDir = date('Y-m-d');   // 未来将支持选择文件夹
         $basePath = dirname(dirname(dirname(__FILE__))) . '/resourse/images';
         $tarPath = $basePath . '/' . $baseDir . '/';
+        if(!is_dir($tarPath) && !(mkdir($tarPath, 0777, true))){
+            return $this->json([
+                'code' => false,
+                'msg' => '创建文件夹失败'
+            ]);            
+        }
 
         if(file_exists($tarPath . $file['name'])){
             return $this->json([
