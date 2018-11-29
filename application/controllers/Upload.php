@@ -41,16 +41,18 @@ class Upload extends CI_Controller {
             ]);            
         }
 
-        if(file_exists($tarPath . $file['name'])){
+        $fileName = $baseDir . '_' . time() . '.' .$file['type'];
+        if(file_exists($tarPath . $fileName)){
             return $this->json([
                 'code' => false,
                 'msg' => '文件已经存在'
             ]);
         }
 
-        move_uploaded_file($file['tmp_name'], $tarPath . $file['name']);
+        move_uploaded_file($file['tmp_name'], $tarPath . $fileName);
         return $this->json([
             'code' => true,
+            'image' => $fileName,
             'msg' => '上传成功'
         ]);
 
