@@ -42,6 +42,7 @@ class Upload extends CI_Controller {
         }
 
         $fileName = $baseDir . '_' . time() . '.' .$file['type'];
+        $oldImgName = $tarPath . $file['name'];
         if(file_exists($tarPath . $fileName)){
             return $this->json([
                 'code' => false,
@@ -49,7 +50,8 @@ class Upload extends CI_Controller {
             ]);
         }
 
-        move_uploaded_file($file['tmp_name'], $tarPath . $fileName);
+        move_uploaded_file($file['tmp_name'], $oldImgName);
+        rename($oldImgName, $tarPath . $fileName);
         return $this->json([
             'code' => true,
             'image' => $fileName,
