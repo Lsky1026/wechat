@@ -40,13 +40,19 @@ class Upload extends CI_Controller {
         $basePath = dirname(dirname(dirname(__FILE__))) . '/resourse/images';
         $tarPath = $basePath . '/' . $baseDir . '/';
         if(!is_dir($tarPath) && 
-            !(mkdir($tarPath, 0777, true)) &&
-            !is_dir($tarPath . "/original/") && 
-            !(mkdir($tarPath . '/original/', 0777, true))){
+            !(mkdir($tarPath, 0777, true))){
             return $this->json([
                 'code' => false,
-                'msg' => '创建文件夹失败'
-            ]);            
+                'msg' => "创建{$baseDir}文件夹失败"
+            ]);
+        }
+
+        if(!is_dir($tarPath . "/original/") && 
+        !(mkdir($tarPath . '/original/', 0777, true))){
+            return $this->json([
+                'code' => false,
+                'msg' => '创建original文件夹失败'
+            ]);
         }
 
         // 更改目录为 resourse/images/$baseDir/original/
