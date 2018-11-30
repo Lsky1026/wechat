@@ -6,6 +6,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // use \QCloud_WeApp_SDK\Constants as Constants;
 
 class Upload extends CI_Controller {
+    const DEFAULT_WIDTH = 800;      // 默认宽度
+    const DEFATUL_HEIGHT = 500;     // 默认高度
+
+    const COMPRESS_ONE = 400;   // 默认常量
+    const COMPRESS_TWO = 225;   // 默认常量
     public function index() {
         // 处理文件上传
         $file = $_FILES['uploadImg']; // 去除 field 值为 file 的文件
@@ -34,12 +39,18 @@ class Upload extends CI_Controller {
         $baseDir = date('Y-m-d');   // 未来将支持选择文件夹
         $basePath = dirname(dirname(dirname(__FILE__))) . '/resourse/images';
         $tarPath = $basePath . '/' . $baseDir . '/';
-        if(!is_dir($tarPath) && !(mkdir($tarPath, 0777, true))){
+        if(!is_dir($tarPath) && 
+            !(mkdir($tarPath, 0777, true)) &&
+            !is_dir($tarPath . "/original/") && 
+            !(mkdir($tarPath . '/original/', 0777, true))){
             return $this->json([
                 'code' => false,
                 'msg' => '创建文件夹失败'
             ]);            
         }
+
+        // 更改目录为 resourse/images/$baseDir/original/
+        $tarPath .= "/original/";
 
         $fileName = $baseDir . '_' . time() . '.' . explode('/', $file['type'])[1];
         $oldImgName = $tarPath . $file['name'];
@@ -52,6 +63,9 @@ class Upload extends CI_Controller {
 
         move_uploaded_file($file['tmp_name'], $oldImgName);
         rename($oldImgName, $tarPath . $fileName);
+
+        // 执行压缩操作
+
         return $this->json([
             'code' => true,
             'image' => $fileName,
