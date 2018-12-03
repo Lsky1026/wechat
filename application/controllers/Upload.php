@@ -26,10 +26,10 @@ class Upload extends CI_Controller {
         }
         
         // 限制文件大小：5M 以内
-        if ($file['size'] > 5 * 1024 * 1024) {
+        if ($file['size'] > 10 * 1024 * 1024) {
             $this->json([
                 'code' => 1,
-                'data' => '上传图片过大，仅支持 5M 以内的图片上传'
+                'data' => '上传图片过大，仅支持 10M 以内的图片上传'
             ]);
             return;
         }
@@ -72,11 +72,20 @@ class Upload extends CI_Controller {
         move_uploaded_file($file['tmp_name'], $oldImgName);
         rename($oldImgName, $fileNamePath);
 
-        if(!$this->compressImage($fileNamePath, $fileName, $compressPath)){
-            return $this->json([
-                'code' => false,
-                'msg' => '压缩图片失败'
-            ]);
+        if($file['size'] > 256 * 1024){
+            if(!$this->compressImage($fileNamePath, $fileName, $compressPath)){
+                return $this->json([
+                    'code' => false,
+                    'msg' => '压缩图片失败'
+                ]);
+            }
+        }else{
+            if(!copy($fileNamePath, $compressPath . $fileName)){
+                return $this->json([
+                    'code' => false,
+                    'msg' => '压缩图生成失败'
+                ]);
+            }
         }
 
         return $this->json([

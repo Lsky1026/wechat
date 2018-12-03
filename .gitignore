@@ -2,3 +2,5 @@ config.php
 vendor/qcloud/weapp-sdk/lib/Conf.php
 .DS_Store
 resourse/
+
+config.php
