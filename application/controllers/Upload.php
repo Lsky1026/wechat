@@ -148,7 +148,7 @@ class Upload extends CI_Controller {
         list($width, $height, $type, $attr) = getimagesize($tarImage);
         $imageCreate = "imagecreatefrom" . $type;
         // 生成原图样例
-        $image = $func($tarImage);
+        $image = $imageCreate($tarImage);
         // 按比例生成画布
         $image_thump = imagecreatetruecolor($width * self::DEFAULT_PERCENT, $height * self::DEFAULT_PERCENT);
         imagecopyresampled($image_thump, $image, 0, 0, 0, 0, $width * self::DEFAULT_PERCENT, $height * self::DEFAULT_PERCENT, $width, $height);
