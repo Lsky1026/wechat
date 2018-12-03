@@ -6,11 +6,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // use \QCloud_WeApp_SDK\Constants as Constants;
 
 class Upload extends CI_Controller {
-    const DEFAULT_WIDTH = 800;      // 默认宽度
-    const DEFATUL_HEIGHT = 500;     // 默认高度
+    const DEFAULT_PERCENT = 0.1;
+    const COMPRESS_DIR = 'JPEG';
 
-    const COMPRESS_ONE = 400;   // 默认常量
-    const COMPRESS_TWO = 225;   // 默认常量
     public function index() {
         // 处理文件上传
         $file = $_FILES['uploadImg']; // 去除 field 值为 file 的文件
@@ -47,20 +45,24 @@ class Upload extends CI_Controller {
             ]);
         }
 
-        if(!is_dir($tarPath . "/original/") && 
-        !(mkdir($tarPath . '/original/', 0777, true))){
+        // 压缩图片存在目录
+        // 压缩目录为 resourse/images/$baseDir/JPEG/
+        $compressPath = $tarPath . "/" . self::COMPRESS_DIR . "/";
+
+        if(!is_dir($compressPath) && 
+        !(mkdir($compressPath, 0777, true))){
             return $this->json([
                 'code' => false,
-                'msg' => '创建original文件夹失败'
+                'msg' => '创建JPEG文件夹失败'
             ]);
         }
 
-        // 更改目录为 resourse/images/$baseDir/original/
-        $tarPath .= "/original/";
-
+        // 图片重命名
         $fileName = $baseDir . '_' . time() . '.' . explode('/', $file['type'])[1];
+        $fileNamePath = $tarPath . $fileName;
+        // 原本图片名  用于定位
         $oldImgName = $tarPath . $file['name'];
-        if(file_exists($tarPath . $fileName)){
+        if(file_exists($fileNamePath)){
             return $this->json([
                 'code' => false,
                 'msg' => '文件已经存在'
@@ -68,9 +70,14 @@ class Upload extends CI_Controller {
         }
 
         move_uploaded_file($file['tmp_name'], $oldImgName);
-        rename($oldImgName, $tarPath . $fileName);
+        rename($oldImgName, $fileNamePath);
 
-        // 执行压缩操作
+        if(!$this->compressImage($fileNamePath, $fileName, $compressPath)){
+            return $this->json([
+                'code' => false,
+                'msg' => '压缩图片失败'
+            ]);
+        }
 
         return $this->json([
             'code' => true,
@@ -127,5 +134,27 @@ class Upload extends CI_Controller {
         //         'error' => $e->__toString()
         //     ]);
         // }
+    }
+
+    /**
+     * 压缩图片 并保存
+     * @param tarImage 目标图片
+     */
+    public function compressImage ($tarImage, $imageName, $tarPath){
+        if(empty($tarImage) || empty($imageName) || empty($tarPath)){
+            return false;
+        }
+        // 执行压缩操作
+        list($width, $height, $type, $attr) = getimagesize($tarImage);
+        $imageCreate = "imagecreatefrom" . $type;
+        // 生成原图样例
+        $image = $func($tarImage);
+        // 按比例生成画布
+        $image_thump = imagecreatetruecolor($width * self::DEFAULT_PERCENT, $height * self::DEFAULT_PERCENT);
+        imagecopyresampled($image_thump, $image, 0, 0, 0, 0, $width * self::DEFAULT_PERCENT, $height * self::DEFAULT_PERCENT, $width, $height);
+        $func = "image" . $type;
+        $func($image_thump, $tarPath . $imageName, 100);
+        imagedestroy($imageCreate);
+        return true;
     }
 }
