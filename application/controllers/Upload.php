@@ -156,7 +156,7 @@ class Upload extends CI_Controller {
         imagecopyresampled($image_thump, $image, 0, 0, 0, 0, $width * self::DEFAULT_PERCENT, $height * self::DEFAULT_PERCENT, $width, $height);
         $func = "image" . $type;
         $func($image_thump, $tarPath . $imageName);
-        imagedestroy($imageCreate);
+        imagedestroy($image);
         return true;
     }
 }
