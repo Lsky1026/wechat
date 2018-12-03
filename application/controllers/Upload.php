@@ -144,8 +144,10 @@ class Upload extends CI_Controller {
         if(empty($tarImage) || empty($imageName) || empty($tarPath)){
             return false;
         }
+        $imageTypeList = [1 => "GIF",2 => "JPG",3 => "PNG",4 => "SWF",5 => "PSD",6 => "BMP",7 => "TIFF",8 => "TIFF",9 => "JPC",10 => "JP2",11 => "JPX",12 => "JB2",13 => "SWC",14 => "IFF",15 => "WBMP",16 => "XBM"];
         // 执行压缩操作
         list($width, $height, $type, $attr) = getimagesize($tarImage);
+        $type = strtolower($imageTypeList[$type]);
         $imageCreate = "imagecreatefrom" . $type;
         // 生成原图样例
         $image = $imageCreate($tarImage);
