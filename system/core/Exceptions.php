@@ -37,8 +37,6 @@
  */
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-require_once '../../config.php';
-
 /**
  * Exceptions Class
  *
@@ -158,9 +156,6 @@ class CI_Exceptions {
 	 */
 	public function show_error($heading, $message, $template = 'error_general', $status_code = 500)
 	{
-		if($config['error'] == 'dev'){
-			return;
-		}
 		$templates_path = config_item('error_views_path');
 		if (empty($templates_path))
 		{
