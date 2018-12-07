@@ -88,9 +88,13 @@ class Upload extends CI_Controller {
             }
         }
 
+        list($width, $height) = getimagesize($compressPath . $fileName);
+
         return $this->json([
             'code' => true,
-            'image' => $fileName,
+            'imageName' => $fileName,
+            'imageHeight' => $height,
+            'imageWidth' => $width,
             'msg' => '上传成功'
         ]);
 
