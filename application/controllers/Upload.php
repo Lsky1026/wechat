@@ -34,7 +34,7 @@ class Upload extends CI_Controller {
             return;
         }
 
-        $baseDir = $_GET['dir'];   // 未来将支持选择文件夹
+        $baseDir = $_POST['dir'];   // 未来将支持选择文件夹
         $basePath = dirname(dirname(dirname(__FILE__))) . '/resourse/images';
         $tarPath = $basePath . '/' . $baseDir . '/';
         if(!is_dir($tarPath) && 
